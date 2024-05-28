@@ -1,109 +1,42 @@
+using System.Collections.Concurrent;
 
-using System;
-using System.Collections.Generic;
-
-namespace TokenStorage
+public class MyOAuthProvider : OAuthAuthorizationServerProvider
 {
-    // Define a class to represent user sessions
-    public class UserSession
+    private static ConcurrentDictionary<string, string> _tokenDictionary = new ConcurrentDictionary<string, string>();
+
+    public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
     {
-        public string UserId { get; set; }
-        public string Token { get; set; }
-        public DateTime Expiry { get; set; }
-    }
-
-    // Define a class to manage token storage
-    public class TokenManager
-    {
-        private Dictionary<string, UserSession> _sessions;
-
-        public TokenManager()
+        using (UserRepo repo = new UserRepo())
         {
-            _sessions = new Dictionary<string, UserSession>();
-        }
+            var user = repo.ValidateUser(context.UserName, context.Password);
 
-        // Method to generate and store a token for a user
-        public string GenerateToken(string userId)
-        {
-            // Generate a random token (you may want to use a library for better randomness)
-            string token = Guid.NewGuid().ToString();
-
-            // Set the token expiry time (for simplicity, let's set it to 1 hour from now)
-            DateTime expiry = DateTime.UtcNow.AddHours(1);
-
-            // Store the token in the session dictionary
-            _sessions[token] = new UserSession { UserId = userId, Token = token, Expiry = expiry };
-
-            return token;
-        }
-
-        // Method to validate a token and retrieve the associated user ID
-        public string ValidateToken(string token)
-        {
-            if (_sessions.ContainsKey(token))
+            if (user == null)
             {
-                UserSession session = _sessions[token];
-
-                // Check if the token has expired
-                if (session.Expiry > DateTime.UtcNow)
-                {
-                    return session.UserId;
-                }
-                else
-                {
-                    // Token has expired, remove it from storage
-                    _sessions.Remove(token);
-                }
+                context.SetError("invalid_grant", "Username or Password is incorrect!");
+                return;
             }
-            return null; // Token not found or expired
-        }
 
-        // Method to revoke a token (e.g., logout)
-        public void RevokeToken(string token)
-        {
-            if (_sessions.ContainsKey(token))
+            var identity = new ClaimsIdentity(context.Options.AuthenticationType);
+            identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
+            identity.AddClaim(new Claim(ClaimTypes.Email, user.Email));
+
+            foreach (var role in user.Roles.Split(','))
             {
-                _sessions.Remove(token);
+                identity.AddClaim(new Claim(ClaimTypes.Role, role.Trim()));
             }
+
+            var ticket = new AuthenticationTicket(identity, new AuthenticationProperties());
+            var token = context.Options.AccessTokenFormat.Protect(ticket);
+
+            // Store the token in the dictionary
+            _tokenDictionary[token] = token;
+
+            context.Validated(ticket);
         }
     }
 
-    class Program
+    public static bool ValidateToken(string token)
     {
-        static void Main(string[] args)
-        {
-            TokenManager tokenManager = new TokenManager();
-
-            // Example usage:
-            string userId = "123";
-            string token = tokenManager.GenerateToken(userId);
-            Console.WriteLine("Generated Token: " + token);
-
-            // Validate the token
-            string validatedUserId = tokenManager.ValidateToken(token);
-            if (validatedUserId != null)
-            {
-                Console.WriteLine("Valid Token for User ID: " + validatedUserId);
-            }
-            else
-            {
-                Console.WriteLine("Invalid Token");
-            }
-
-            // Revoke the token (logout)
-            tokenManager.RevokeToken(token);
-            Console.WriteLine("Token Revoked");
-
-            // Attempt to validate the revoked token
-            validatedUserId = tokenManager.ValidateToken(token);
-            if (validatedUserId != null)
-            {
-                Console.WriteLine("Valid Token for User ID: " + validatedUserId);
-            }
-            else
-            {
-                Console.WriteLine("Invalid Token (Revoked)");
-            }
-        }
+        return _tokenDictionary.ContainsKey(token);
     }
 }
