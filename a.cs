@@ -7,8 +7,8 @@ namespace ConfigLibrary
 {
     public static class EncryptionUtility
     {
-        private static readonly byte[] Key = Encoding.UTF8.GetBytes("your-32-char-key-for-AES-encryption!");
-        private static readonly byte[] IV = Encoding.UTF8.GetBytes("your-16-char-iv-forAES!");
+        private static readonly byte[] Key = Encoding.UTF8.GetBytes("0123456789ABCDEF0123456789ABCDEF");
+        private static readonly byte[] IV = Encoding.UTF8.GetBytes("ABCDEF1234567890");
 
         public static string Encrypt(string plainText)
         {
@@ -33,22 +33,67 @@ namespace ConfigLibrary
 
         public static string Decrypt(string encryptedText)
         {
-            using (var aes = Aes.Create())
+            try
             {
-                aes.Key = Key;
-                aes.IV = IV;
-
-                using (var decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
-                using (var ms = new MemoryStream(Convert.FromBase64String(encryptedText)))
-                using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
-                using (var reader = new StreamReader(cs))
+                using (var aes = Aes.Create())
                 {
-                    return reader.ReadToEnd();
+                    aes.Key = Key;
+                    aes.IV = IV;
+
+                    using (var decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
+                    using (var ms = new MemoryStream(Convert.FromBase64String(encryptedText)))
+                    using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+                    using (var reader = new StreamReader(cs))
+                    {
+                        return reader.ReadToEnd();
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                // If decryption fails, return the original text
+                return encryptedText;
             }
         }
     }
 }
+
+
+
+
+
+
+private void LoadConfiguration(string filePath)
+{
+    ConfigElements.Clear();
+    var map = new ExeConfigurationFileMap { ExeConfigFilename = filePath };
+    var config = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
+    var configSection = (ConnectionConfigSection)config.GetSection("connectionConfig");
+
+    if (configSection != null)
+    {
+        foreach (ConnectionConfigElement encryptedElement in configSection.Connections)
+        {
+            var element = new ConnectionConfigElement
+            {
+                EnvName = EncryptionUtility.Decrypt(encryptedElement.EnvName),
+                ConnectionString = EncryptionUtility.Decrypt(encryptedElement.ConnectionString),
+                EchoRoutingKey = EncryptionUtility.Decrypt(encryptedElement.EchoRoutingKey),
+                EchoServerUrl = EncryptionUtility.Decrypt(encryptedElement.EchoServerUrl)
+            };
+
+            ConfigElements.Add(element);
+        }
+    }
+    else
+    {
+        MessageBox.Show("Configuration section not found.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+    }
+}
+
+
+
+
 
 
 
@@ -90,87 +135,3 @@ private void SaveButton_Click(object sender, RoutedEventArgs e)
         MessageBox.Show($"Error saving configuration: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
     }
 }
-
-
-
-
-
-
-private void LoadConfiguration(string filePath)
-{
-    ConfigElements.Clear();
-    var map = new ExeConfigurationFileMap { ExeConfigFilename = filePath };
-    var config = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
-    var configSection = (ConnectionConfigSection)config.GetSection("connectionConfig");
-
-    if (configSection != null)
-    {
-        foreach (ConnectionConfigElement encryptedElement in configSection.Connections)
-        {
-            var element = new ConnectionConfigElement
-            {
-                EnvName = EncryptionUtility.Decrypt(encryptedElement.EnvName),
-                ConnectionString = EncryptionUtility.Decrypt(encryptedElement.ConnectionString),
-                EchoRoutingKey = EncryptionUtility.Decrypt(encryptedElement.EchoRoutingKey),
-                EchoServerUrl = EncryptionUtility.Decrypt(encryptedElement.EchoServerUrl)
-            };
-
-            ConfigElements.Add(element);
-        }
-    }
-    else
-    {
-        MessageBox.Show("Configuration section not found.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-    }
-}
-
-
-
-
-
-using System;
-using System.Configuration;
-using ConfigLibrary;
-
-namespace YourOtherApplication
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            var configSection = (ConnectionConfigSection)ConfigurationManager.GetSection("connectionConfig");
-
-            if (configSection != null)
-            {
-                foreach (ConnectionConfigElement encryptedElement in configSection.Connections)
-                {
-                    var element = new ConnectionConfigElement
-                    {
-                        EnvName = EncryptionUtility.Decrypt(encryptedElement.EnvName),
-                        ConnectionString = EncryptionUtility.Decrypt(encryptedElement.ConnectionString),
-                        EchoRoutingKey = EncryptionUtility.Decrypt(encryptedElement.EchoRoutingKey),
-                        EchoServerUrl = EncryptionUtility.Decrypt(encryptedElement.EchoServerUrl)
-                    };
-
-                    Console.WriteLine($"Env: {element.EnvName}, ConnectionString: {element.ConnectionString}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Configuration section not found.");
-            }
-        }
-    }
-}
-
-
-
-
-Encryption Key (32 bytes for AES-256):
-
-Copy code
-0123456789ABCDEF0123456789ABCDEF
-Initialization Vector (IV) (16 bytes):
-
-Copy code
-ABCDEF1234567890
