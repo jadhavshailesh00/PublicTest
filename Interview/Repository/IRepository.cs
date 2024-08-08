@@ -4,7 +4,8 @@ namespace Interview.Repository
 {
     public interface IRepository
     {
-        public string searchData();
+        public string SearchDataByID(int id);
+        public string SearchData(string query, string filter, string sort);
 
     }
 }

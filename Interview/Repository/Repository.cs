@@ -6,7 +6,12 @@ namespace Interview.Repository
     public class Repository : IRepository
     {
         
-        public string searchData()
+        public string SearchDataByID(int id)
+        {
+            return "data";
+        }
+
+        public string SearchData(string query, string filter, string sort)
         {
             return "data";
         }

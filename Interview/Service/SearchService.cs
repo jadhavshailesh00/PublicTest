@@ -11,9 +11,16 @@ namespace Interview.Service
             _searchResultRepository = searchResultRepository;
         }
 
-        public string searchData()
+        public string SearchDataByID(int id)
         {
-            return _searchResultRepository.searchData();
+            return _searchResultRepository.SearchDataByID(id);
         }
+
+
+        public string SearchData(string query, string filter, string sort)
+        {
+            return _searchResultRepository.SearchData(query,filter,sort);
+        }
+        
     }
 }
