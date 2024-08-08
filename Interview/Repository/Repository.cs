@@ -38,7 +38,7 @@ namespace Interview.Repository
         public List<SearchResponse> SearchData(string query, string filter, string sort)
         {
             var searchData = _data.Where(item =>
-                           item.Title.Contains(query) || item.Description.Contains(query));
+                           item.Title.Contains(query) || item.Description.Contains(query) || item.Category.Contains(query))  ;
             return searchData.ToList();
         }
     }

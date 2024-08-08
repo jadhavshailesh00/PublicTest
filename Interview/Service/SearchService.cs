@@ -1,7 +1,5 @@
 ﻿using Interview.Entity;
 using Interview.Repository;
-using System.Collections.Generic;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Interview.Service
 {
@@ -11,7 +9,7 @@ namespace Interview.Service
 
         public SearchService()
         {
-            _searchResultRepository = new Interview.Repository.Repository();
+            _searchResultRepository = new Repository.Repository();
         }
 
         public SearchResponse SearchDataByID(string id)
@@ -38,10 +36,10 @@ namespace Interview.Service
             {
                 if (Filter== "recent")
                 {
-                    result = ResultData.Where(item => item.Date >= DateTime.UtcNow.AddDays(-30)).ToList();
+                   return result = ResultData.Where(item => item.Date >= DateTime.UtcNow.AddDays(-30)).ToList();
                 }
             }
-            return result;
+            return ResultData;
         }
 
         public List<SearchResponse> ApplySort(List<SearchResponse> ResultData, string Sort)
@@ -51,26 +49,26 @@ namespace Interview.Service
             {
                 if (Sort == "ID")
                 {
-                    result = ResultData.OrderBy(item=>item.ID).ToList();
+                  return  result = ResultData.OrderByDescending(item=>item.ID).ToList();
                 }
                 else if(Sort == "Title")
                 {
-                    result = ResultData.OrderBy(item => item.Title).ToList();
+                    return result = ResultData.OrderBy(item => item.Title).ToList();
                 }
                 else if(Sort == "Description")
                 {
-                    result = ResultData.OrderBy(item => item.Description).ToList();
+                    return result = ResultData.OrderBy(item => item.Description).ToList();
                 }
                 else if(Sort == "Category")
                 {
-                    result = ResultData.OrderBy(item => item.Category).ToList();
+                    return result = ResultData.OrderBy(item => item.Category).ToList();
                 }
                 else if(Sort == "Date")
                 {
-                    result = ResultData.OrderBy(item => item.Date).ToList();
+                    return result = ResultData.OrderBy(item => item.Date).ToList();
                 }
             }
-            return result;
+            return ResultData;
         }
 
     }
