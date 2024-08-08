@@ -9,12 +9,12 @@ namespace Interview.Service
     {
         private readonly IRepository _searchResultRepository;
 
-        public SearchService(IRepository searchResultRepository)
+        public SearchService()
         {
-            _searchResultRepository = searchResultRepository;
+            _searchResultRepository = new Interview.Repository.Repository();
         }
 
-        public SearchResponse SearchDataByID(int id)
+        public SearchResponse SearchDataByID(string id)
         {
             return _searchResultRepository.SearchDataByID(id);
         }

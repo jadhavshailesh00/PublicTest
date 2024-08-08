@@ -24,7 +24,7 @@ namespace Interview.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetSearchById(int id)
+        public IActionResult GetSearchById(string id)
         {
             var result = _searchService.SearchDataByID(id);
             if (result == null) return NotFound();

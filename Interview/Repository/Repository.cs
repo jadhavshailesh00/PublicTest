@@ -6,7 +6,7 @@ namespace Interview.Repository
 {
     public class Repository : IRepository
     {
-        private readonly List<SearchResponse> _data;
+        private readonly List<SearchResponse> _data=new List<SearchResponse>();
 
         public Repository()
         {
@@ -22,7 +22,7 @@ namespace Interview.Repository
             _data.Add(new SearchResponse { ID = "10" ,Category = "Music", Date = new DateTime(2024, 12, 8), Description = "New album", Title = "Title album" });
         }
 
-        public SearchResponse SearchDataByID(int id)
+        public SearchResponse SearchDataByID(string id)
         {
             var result= _data.Where(item=>item.ID.Equals(id)).FirstOrDefault();
             if (result == null)
