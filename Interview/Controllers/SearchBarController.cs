@@ -16,7 +16,7 @@ namespace Interview.Controllers
         }
 
         [HttpGet()]
-        public async Task<IActionResult> SearchBar([FromQuery] string query, [FromQuery] string filter = null, [FromQuery] string sort = null)
+        public IActionResult SearchBar([FromQuery] string query, [FromQuery] string filter = null, [FromQuery] string sort = null)
         {
             var results =  _searchService.SearchData(query, filter, sort);
             if (results == null) return NotFound();
@@ -24,7 +24,7 @@ namespace Interview.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetSearchById(int id)
+        public IActionResult GetSearchById(int id)
         {
             var result = _searchService.SearchDataByID(id);
             if (result == null) return NotFound();
