@@ -11,7 +11,6 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
 
-    // Define the security scheme for JWT
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -21,7 +20,6 @@ builder.Services.AddSwaggerGen(options =>
         Scheme = "Bearer"
     });
 
-    // Require JWT authentication globally for all controllers
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -39,6 +37,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddTransient<IJwtTokenService, JwtTokenService>();
+builder.Services.AddTransient<ISearchService, SearchService>();
 
 builder.Services.AddAuthentication(options =>
 {
