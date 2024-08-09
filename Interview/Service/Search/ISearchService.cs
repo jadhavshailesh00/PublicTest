@@ -1,4 +1,4 @@
-﻿using Interview.Entity;
+﻿using Interview.Entity.Response;
 
 namespace Interview.Service.Search
 {

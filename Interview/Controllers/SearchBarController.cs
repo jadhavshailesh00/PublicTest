@@ -1,6 +1,10 @@
-﻿using Interview.Service.Search;
+﻿using Interview.Entity;
+using Interview.Entity.Response;
+using Interview.Service.Search;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace Interview.Controllers
 {
@@ -32,44 +36,86 @@ namespace Interview.Controllers
         /// <param name="query">The search query.</param>
         /// <param name="filter">The optional filter parameter.</param>
         /// <param name="sort">The optional sort parameter.</param>
-        /// <returns>A list of search results.</returns>
+        /// <returns>A list of search results or an error response.</returns>
         /// <response code="200">Returns the list of search results.</response>
         /// <response code="404">If no results are found.</response>
+        /// <response code="500">If an unexpected error occurs.</response>
         [HttpGet]
         public IActionResult SearchBar([FromQuery] string query, [FromQuery] string filter = null, [FromQuery] string sort = null)
         {
-            _logger.LogInformation("SearchBar endpoint called with query: {query}, filter: {filter}, sort: {sort}", query, filter, sort);
-
-            var results = _searchService.SearchData(query, filter, sort);
-            if (results == null)
+            try
             {
-                _logger.LogWarning("No results found for query: {query}", query);
-                return NotFound();
-            }
+                _logger.LogInformation("SearchBar endpoint called with query: {query}, filter: {filter}, sort: {sort}", query, filter, sort);
 
-            return Ok(results);
+                var results = _searchService.SearchData(query, filter, sort);
+                if (results == null)
+                {
+                    _logger.LogWarning("No results found for query: {query}", query);
+                    return NotFound(new ErrorResponse
+                    {
+                        Message = "No results were found for your search query.",
+                        ErrorCode = "NO_RESULTS_FOUND",
+                        Resolution = "Please try adjusting your search parameters.",
+                        ErrorId = Guid.NewGuid().ToString()
+                    });
+                }
+
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while searching for data.");
+                return StatusCode(500, new ErrorResponse
+                {
+                    Message = "An unexpected error occurred while processing your search.",
+                    ErrorCode = "SEARCH_ERROR",
+                    Resolution = "Please contact support with the error ID for further assistance.",
+                    ErrorId = Guid.NewGuid().ToString()
+                });
+            }
         }
 
         /// <summary>
         /// Retrieves a specific search result by its ID.
         /// </summary>
         /// <param name="id">The ID of the search result.</param>
-        /// <returns>The search result corresponding to the provided ID.</returns>
+        /// <returns>The search result corresponding to the provided ID or an error response.</returns>
         /// <response code="200">Returns the search result.</response>
         /// <response code="404">If no result is found with the provided ID.</response>
+        /// <response code="500">If an unexpected error occurs.</response>
         [HttpGet("{id}")]
         public IActionResult GetSearchById(string id)
         {
-            _logger.LogInformation("GetSearchById endpoint called with ID: {id}", id);
-
-            var result = _searchService.SearchDataByID(id);
-            if (result == null)
+            try
             {
-                _logger.LogWarning("No result found with ID: {id}", id);
-                return NotFound();
-            }
+                _logger.LogInformation("GetSearchById endpoint called with ID: {id}", id);
 
-            return Ok(result);
+                var result = _searchService.SearchDataByID(id);
+                if (result == null)
+                {
+                    _logger.LogWarning("No result found with ID: {id}", id);
+                    return NotFound(new ErrorResponse
+                    {
+                        Message = "No result was found with the provided ID.",
+                        ErrorCode = "ID_NOT_FOUND",
+                        Resolution = "Please verify the ID and try again.",
+                        ErrorId = Guid.NewGuid().ToString()
+                    });
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving the search result by ID.");
+                return StatusCode(500, new ErrorResponse
+                {
+                    Message = "An unexpected error occurred while processing your request.",
+                    ErrorCode = "SEARCH_BY_ID_ERROR",
+                    Resolution = "Please contact support with the error ID for further assistance.",
+                    ErrorId = Guid.NewGuid().ToString()
+                });
+            }
         }
     }
 }

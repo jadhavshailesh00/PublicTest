@@ -1,4 +1,4 @@
-﻿namespace Interview.Entity
+﻿namespace Interview.Entity.Response
 {
     /// <summary>
     /// Represents the response returned from a search operation.

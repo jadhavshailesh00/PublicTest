@@ -1,4 +1,5 @@
 using Interview.App_Start;
+using Interview.Repository;
 using Interview.Service.Search;
 using Interview.Service.Token;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -56,6 +57,9 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<ISearchService, SearchService>();
+builder.Services.AddTransient<IRepository, Repository>();
+
+ 
 
 builder.Services.AddAuthentication(options =>
 {

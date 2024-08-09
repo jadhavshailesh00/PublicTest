@@ -1,4 +1,4 @@
-﻿using Interview.Entity;
+﻿using Interview.Entity.Response;
 using Interview.Repository;
 
 namespace Interview.Service.Search
@@ -7,9 +7,9 @@ namespace Interview.Service.Search
     {
         private readonly IRepository _searchResultRepository;
 
-        public SearchService()
+        public SearchService(IRepository Repository)
         {
-            _searchResultRepository = new Repository.Repository();
+            _searchResultRepository = Repository;
         }
 
         public SearchResponse SearchDataByID(string id)

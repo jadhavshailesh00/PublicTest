@@ -1,4 +1,4 @@
-﻿using Interview.Entity;
+﻿using Interview.Entity.Response;
 
 namespace Interview.Repository
 {
@@ -25,7 +25,8 @@ namespace Interview.Repository
             var result = _data.Where(item => item.ID.Equals(id)).FirstOrDefault();
             if (result == null)
             {
-                return new SearchResponse { ID = "-1", Category = "Not Found", Date = DateTime.MinValue, Description = "Search item not found", Title = "No Match" };
+                // return new SearchResponse { ID = "-1", Category = "Not Found", Date = DateTime.MinValue, Description = "Search item not found", Title = "No Match" };
+                return null;
             }
             else
             {
@@ -37,6 +38,10 @@ namespace Interview.Repository
         {
             var searchData = _data.Where(item =>
                            item.Title.Contains(query) || item.Description.Contains(query) || item.Category.Contains(query));
+            if (searchData.Count() == 0)
+            {
+                return null;
+            }
             return searchData.ToList();
         }
     }
