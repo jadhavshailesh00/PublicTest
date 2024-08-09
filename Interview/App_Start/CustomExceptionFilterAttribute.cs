@@ -1,41 +1,32 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-using System.Net;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace Interview.App_Start
 {
-    public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
+    public class CustomExceptionFilterAttribute : IExceptionFilter
     {
+        private readonly ILogger<CustomExceptionFilterAttribute> _logger;
 
-        public override void OnException(ExceptionContext context)
+        public CustomExceptionFilterAttribute(ILogger<CustomExceptionFilterAttribute> logger)
         {
-            var logger = context.HttpContext.RequestServices.GetService<ILogger<CustomExceptionFilterAttribute>>();
-            var exception = context.Exception;
-            HttpStatusCode statusCode;
-            string message;
+            _logger = logger;
+        }
 
-            switch (exception)
-            {
-                case Exception notFoundException:
-                    statusCode = HttpStatusCode.NotFound;
-                    message = notFoundException.Message;
-                    break;
-               
-                default:
-                    statusCode = HttpStatusCode.InternalServerError;
-                    message = "An unexpected error occurred.";
-                    logger?.LogError(exception, exception.Message);
-                    break;
-            }
+        public void OnException(ExceptionContext context)
+        {
+            _logger.LogError(context.Exception, "An unhandled exception occurred.");
 
-            context.Result = new JsonResult(new { error = message })
+            context.Result = new JsonResult(new
             {
-                StatusCode = (int)statusCode
+                Error = "An internal error occurred. Please try again later. test"
+            })
+            {
+                StatusCode = 500
             };
 
-            context.ExceptionHandled = true; 
+            context.ExceptionHandled = true;
         }
     }
-
 }

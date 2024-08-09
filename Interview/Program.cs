@@ -1,3 +1,4 @@
+using Interview.App_Start;
 using Interview.Service.Search;
 using Interview.Service.Token;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -60,6 +61,16 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<CustomExceptionFilterAttribute>();
+});
+
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

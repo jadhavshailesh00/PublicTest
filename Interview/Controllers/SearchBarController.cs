@@ -13,10 +13,12 @@ namespace Interview.Controllers
     {
 
         private readonly ISearchService _searchService;
+        private readonly ILogger<SearchBarController> _logger;
 
-        public SearchBarController(ISearchService searchService)
+        public SearchBarController(ISearchService searchService, ILogger<SearchBarController> logger)
         {
             _searchService = searchService;
+            _logger = logger;
         }
 
         
