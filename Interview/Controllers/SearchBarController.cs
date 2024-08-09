@@ -1,14 +1,13 @@
 ﻿using Interview.App_Start;
 using Interview.Service;
-using Microsoft.AspNetCore.Mvc;
-using Interview.App_Start;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Interview.Controllers
+
 {
     [Route("api/[controller]")]
-    [CustomExceptionFilter]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [ApiController]
     public class SearchBarController :ControllerBase
     {
