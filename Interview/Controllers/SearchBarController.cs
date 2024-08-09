@@ -1,7 +1,6 @@
 ﻿using Interview.Service.Search;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace Interview.Controllers
 {
