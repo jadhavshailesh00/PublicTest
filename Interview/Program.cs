@@ -1,3 +1,4 @@
+using Interview.App_Start;
 using Interview.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,8 +12,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<ISearchService, SearchService>();
 
-
 var app = builder.Build();
+app.UseMiddleware<RequestResponseLoggingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

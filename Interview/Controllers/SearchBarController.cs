@@ -1,9 +1,12 @@
-﻿using Interview.Service;
+﻿using Interview.App_Start;
+using Interview.Service;
 using Microsoft.AspNetCore.Mvc;
+using Interview.App_Start;
 
 namespace Interview.Controllers
 {
     [Route("api/[controller]")]
+    [CustomExceptionFilter]
     [ApiController]
     public class SearchBarController :ControllerBase
     {
@@ -15,6 +18,7 @@ namespace Interview.Controllers
             _searchService = searchService;
         }
 
+        
         [HttpGet()]
         public IActionResult SearchBar([FromQuery] string query, [FromQuery] string filter = null, [FromQuery] string sort = null)
         {
