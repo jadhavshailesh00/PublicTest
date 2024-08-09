@@ -1,5 +1,5 @@
 ﻿using Interview.App_Start;
-using Interview.Service;
+using Interview.Service.Search;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

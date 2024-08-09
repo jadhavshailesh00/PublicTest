@@ -1,4 +1,5 @@
-﻿using Interview.Service;
+﻿using Interview.Entity;
+using Interview.Service.Token;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,11 +9,11 @@ namespace Interview.Controllkers
     [Route("security")]
     public class SecurityController : ControllerBase
     {
-        private readonly IJwtTokenService _jwtTokenService;
+        private readonly ITokenService _TokenService;
 
-        public SecurityController(IJwtTokenService jwtTokenService)
+        public SecurityController(ITokenService TokenService)
         {
-            _jwtTokenService = jwtTokenService;
+            _TokenService = TokenService;
         }
 
         [HttpPost("createToken")]
@@ -21,7 +22,7 @@ namespace Interview.Controllkers
         {
             if (user.UserName == "string" && user.Password == "string")
             {
-                var token = _jwtTokenService.GenerateToken(user);
+                var token = _TokenService.GenerateToken(user);
                 return Ok(token);
             }
 

@@ -1,4 +1,4 @@
-﻿namespace Interview
+﻿namespace Interview.Entity
 {
     public class User
     {

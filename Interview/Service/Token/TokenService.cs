@@ -1,15 +1,16 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Interview.Entity;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Interview.Service
+namespace Interview.Service.Token
 {
-    public class JwtTokenService : IJwtTokenService
+    public class TokenService : ITokenService
     {
         private readonly IConfiguration _configuration;
 
-        public JwtTokenService(IConfiguration configuration)
+        public TokenService(IConfiguration configuration)
         {
             _configuration = configuration;
         }

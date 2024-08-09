@@ -1,4 +1,5 @@
-using Interview.Service;
+using Interview.Service.Search;
+using Interview.Service.Token;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -36,7 +37,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-builder.Services.AddTransient<IJwtTokenService, JwtTokenService>();
+builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<ISearchService, SearchService>();
 
 builder.Services.AddAuthentication(options =>

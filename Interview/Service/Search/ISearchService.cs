@@ -1,6 +1,6 @@
 ﻿using Interview.Entity;
 
-namespace Interview.Service
+namespace Interview.Service.Search
 {
     public interface ISearchService
     {

@@ -1,7 +1,7 @@
 ﻿using Interview.Entity;
 using Interview.Repository;
 
-namespace Interview.Service
+namespace Interview.Service.Search
 {
     public class SearchService : ISearchService
     {
@@ -31,12 +31,12 @@ namespace Interview.Service
 
         public List<SearchResponse> ApplyFilter(List<SearchResponse> ResultData, string Filter)
         {
-            List < SearchResponse > result = new List < SearchResponse >();
+            List<SearchResponse> result = new List<SearchResponse>();
             if (Filter != null)
             {
-                if (Filter== "recent")
+                if (Filter == "recent")
                 {
-                   return result = ResultData.Where(item => item.Date >= DateTime.UtcNow.AddDays(-30)).ToList();
+                    return result = ResultData.Where(item => item.Date >= DateTime.UtcNow.AddDays(-30)).ToList();
                 }
             }
             return ResultData;
@@ -49,21 +49,21 @@ namespace Interview.Service
             {
                 if (Sort == "ID")
                 {
-                  return  result = ResultData.OrderByDescending(item=>item.ID).ToList();
+                    return result = ResultData.OrderByDescending(item => item.ID).ToList();
                 }
-                else if(Sort == "Title")
+                else if (Sort == "Title")
                 {
                     return result = ResultData.OrderBy(item => item.Title).ToList();
                 }
-                else if(Sort == "Description")
+                else if (Sort == "Description")
                 {
                     return result = ResultData.OrderBy(item => item.Description).ToList();
                 }
-                else if(Sort == "Category")
+                else if (Sort == "Category")
                 {
                     return result = ResultData.OrderBy(item => item.Category).ToList();
                 }
-                else if(Sort == "Date")
+                else if (Sort == "Date")
                 {
                     return result = ResultData.OrderBy(item => item.Date).ToList();
                 }
