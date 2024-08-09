@@ -4,14 +4,30 @@ using Interview.Service.Token;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "My API",
+        Version = "v1",
+        Description = "A Search API to demonstrate Swagger integration",
+        Contact = new OpenApiContact
+        {
+            Name = "Shailesh jadhav",
+            Email = "jadhavshailesh00@gmail.com",
+            Url = new Uri("https://interview.com"),
+        }
+    });
+
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -64,12 +80,10 @@ builder.Services.AddAuthorization();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
-
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<CustomExceptionFilterAttribute>();
 });
-
 
 var app = builder.Build();
 
