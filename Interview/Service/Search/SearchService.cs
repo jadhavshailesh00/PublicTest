@@ -7,9 +7,9 @@ namespace Interview.Service.Search
     {
         private readonly IRepository _searchResultRepository;
 
-        public SearchService(IRepository Repository)
+        public SearchService(IRepository repository)
         {
-            _searchResultRepository = Repository;
+            _searchResultRepository = repository;
         }
 
         public SearchResponse SearchDataByID(string id)
@@ -19,57 +19,34 @@ namespace Interview.Service.Search
 
         public List<SearchResponse> SearchData(string query, string filter, string sort)
         {
-            var ResultData = _searchResultRepository.SearchData(query, filter, sort);
+            var resultData = _searchResultRepository.SearchData(query, filter, sort);
 
-            ResultData = ApplyFilter(ResultData, filter);
+            resultData = ApplyFilter(resultData, filter);
+            resultData = ApplySort(resultData, sort);
 
-            ResultData = ApplySort(ResultData, sort);
-
-            return ResultData;
+            return resultData;
         }
 
-
-        public List<SearchResponse> ApplyFilter(List<SearchResponse> ResultData, string Filter)
+        private List<SearchResponse> ApplyFilter(List<SearchResponse> resultData, string filter)
         {
-            List<SearchResponse> result = new List<SearchResponse>();
-            if (Filter != null)
+            if (filter == "recent")
             {
-                if (Filter == "recent")
-                {
-                    return result = ResultData.Where(item => item.Date >= DateTime.UtcNow.AddDays(-30)).ToList();
-                }
+                return resultData.Where(item => item.Date >= DateTime.UtcNow.AddDays(-30)).ToList();
             }
-            return ResultData;
+            return resultData;
         }
 
-        public List<SearchResponse> ApplySort(List<SearchResponse> ResultData, string Sort)
+        private List<SearchResponse> ApplySort(List<SearchResponse> resultData, string sort)
         {
-            List<SearchResponse> result = new List<SearchResponse>();
-            if (Sort != null)
+            return sort switch
             {
-                if (Sort == "ID")
-                {
-                    return result = ResultData.OrderByDescending(item => item.ID).ToList();
-                }
-                else if (Sort == "Title")
-                {
-                    return result = ResultData.OrderBy(item => item.Title).ToList();
-                }
-                else if (Sort == "Description")
-                {
-                    return result = ResultData.OrderBy(item => item.Description).ToList();
-                }
-                else if (Sort == "Category")
-                {
-                    return result = ResultData.OrderBy(item => item.Category).ToList();
-                }
-                else if (Sort == "Date")
-                {
-                    return result = ResultData.OrderBy(item => item.Date).ToList();
-                }
-            }
-            return ResultData;
+                "ID" => resultData.OrderByDescending(item => item.ID).ToList(),
+                "Title" => resultData.OrderBy(item => item.Title).ToList(),
+                "Description" => resultData.OrderBy(item => item.Description).ToList(),
+                "Category" => resultData.OrderBy(item => item.Category).ToList(),
+                "Date" => resultData.OrderBy(item => item.Date).ToList(),
+                _ => resultData,
+            };
         }
-
     }
 }

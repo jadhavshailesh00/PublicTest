@@ -18,7 +18,7 @@ namespace Interview.App_Start
 
             context.Result = new JsonResult(new
             {
-                Error = "An internal error occurred. Please try again later. test"
+                Error = "An internal error occurred. Please try again later."
             })
             {
                 StatusCode = 500
