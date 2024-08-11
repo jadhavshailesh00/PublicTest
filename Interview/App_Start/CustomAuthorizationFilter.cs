@@ -1,6 +1,4 @@
-﻿using Interview.Entity.Token;
-using Interview.Model;
-using Interview.Service.Token;
+﻿using Interview.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Options;
@@ -15,7 +13,6 @@ namespace Interview.App_Start
     public class CustomAuthorizationFilter : IAuthorizationFilter
     {
         private readonly OAuthConfig _oauthConfig;
-
         public CustomAuthorizationFilter(IOptions<OAuthConfig> oauthConfig)
         {
             _oauthConfig = oauthConfig.Value;
@@ -24,8 +21,15 @@ namespace Interview.App_Start
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             var token = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var tokentype = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").First();
 
-            if (token == null)
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(tokentype))
+            {
+                context.Result = new UnauthorizedResult();
+                return;
+            }
+
+            if (!tokentype.Contains("Bearer") && !tokentype.Contains("bearer"))
             {
                 context.Result = new UnauthorizedResult();
                 return;
@@ -36,7 +40,7 @@ namespace Interview.App_Start
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(_oauthConfig.Key);
 
-                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                var tokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
@@ -44,8 +48,11 @@ namespace Interview.App_Start
                     ValidIssuer = _oauthConfig.Issuer,
                     ValidateAudience = true,
                     ValidAudience = _oauthConfig.Audience,
-                    ValidateLifetime = true
-                }, out SecurityToken validatedToken);
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+                };
+
+                tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
                 var claimsIdentity = new ClaimsIdentity(jwtToken.Claims);
@@ -57,10 +64,12 @@ namespace Interview.App_Start
                 if (!hasRequiredScope)
                 {
                     context.Result = new ForbidResult();
+                    return;
                 }
-
-                
-
+            }
+            catch (SecurityTokenException)
+            {
+                context.Result = new UnauthorizedResult();
             }
             catch
             {

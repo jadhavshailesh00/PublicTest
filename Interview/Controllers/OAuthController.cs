@@ -4,6 +4,7 @@ using Interview.Service.Token;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 namespace Interview.API.Controllers
 {
@@ -26,6 +27,9 @@ namespace Interview.API.Controllers
         public IActionResult Token(TokenRequest request)
         {
             if (string.IsNullOrEmpty(request.client_id) ||
+                string.IsNullOrEmpty(request.Username) ||
+                string.IsNullOrEmpty(request.Password) ||
+                string.IsNullOrEmpty(request.Scope) ||
                 string.IsNullOrEmpty(request.GrantType) ||
                 string.IsNullOrEmpty(request.client_secret))
             {
@@ -33,6 +37,9 @@ namespace Interview.API.Controllers
                 {
                     ClientId = string.IsNullOrEmpty(request.client_id) ? "The ClientId field is required." : null,
                     GrantType = string.IsNullOrEmpty(request.GrantType) ? "The GrantType field is required." : null,
+                    Username = string.IsNullOrEmpty(request.Username) ? "The Username field is required." : null,
+                    Password = string.IsNullOrEmpty(request.Password) ? "The Password field is required." : null,
+                    Scope = string.IsNullOrEmpty(request.Scope) ? "The Scope field is required." : null,
                     ClientSecret = string.IsNullOrEmpty(request.client_secret) ? "The ClientSecret field is required." : null
                 });
             }
@@ -42,17 +49,20 @@ namespace Interview.API.Controllers
             {
                 return Unauthorized("Invalid client credentials.");
             }
-
-            // Check GrantType
+            if (!request.Username.Equals("shailesh") || request.Username.Equals("ram"))
+            {
+                return BadRequest("Invalid Username.");
+            }
+            if (!request.Password.Equals("password"))
+            {
+                return BadRequest("Invalid password.");
+            }
             if (request.GrantType != "authorization_code" && request.GrantType != "password")
             {
                 return BadRequest("Unsupported grant type.");
             }
-
-            // Generate the token
             var user = new User { UserName = request.Username };
             var token = _tokenService.GenerateToken(user);
-
             return Ok(new { access_token = token, token_type = "bearer" });
         }
     }

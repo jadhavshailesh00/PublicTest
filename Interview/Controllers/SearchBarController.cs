@@ -39,6 +39,8 @@ namespace Interview.Controllers
         /// <returns>A list of search results or an error response.</returns>
         /// <response code="200">Returns the list of search results.</response>
         /// <response code="404">If no results are found.</response>
+        /// <response code="401">Unauthorized client error found.</response>
+        /// <response code="403">HTTP 403 Forbidden client error.</response>
         /// <response code="500">If an unexpected error occurs.</response>
         [HttpGet]
         [Authorize(Policy = "admin")]
