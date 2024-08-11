@@ -1,8 +1,10 @@
 using Interview.App_Start;
+using Interview.Model;
 using Interview.Repository;
 using Interview.Service.Search;
 using Interview.Service.Token;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -58,8 +60,8 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<ISearchService, SearchService>();
 builder.Services.AddTransient<IRepository, Repository>();
+builder.Services.Configure<OAuthConfig>(builder.Configuration.GetSection("OAuth"));
 
- 
 
 builder.Services.AddAuthentication(options =>
 {
@@ -70,9 +72,9 @@ builder.Services.AddAuthentication(options =>
 {
     o.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        ValidIssuer = builder.Configuration["OAuth:Issuer"],
+        ValidAudience = builder.Configuration["OAuth:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["OAuth:Key"])),
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
