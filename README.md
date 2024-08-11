@@ -1,8 +1,14 @@
 # Interview
 ## Home
-![image](https://github.com/user-attachments/assets/3804b3cb-0337-4d9e-970a-61263d3ee0bb)
+![image](https://github.com/user-attachments/assets/950bfbdd-2ce5-47c4-9d90-4aa691ab6456)
+
 ## Token Creation
-![image](https://github.com/user-attachments/assets/8b893d10-9c05-4cae-8819-ddcdb5ef0565)
+![image](https://github.com/user-attachments/assets/8121a352-0c29-49f1-bd75-e1ff406b8762)
+![image](https://github.com/user-attachments/assets/d4ea4f23-e8a5-4415-8b40-6329ce0869d9)
+
+## Token Decode
+![image](https://github.com/user-attachments/assets/9dfb4c73-1692-4dc3-ac9b-f95fb0c8b359)
+
 ## Search By ID
 ![image](https://github.com/user-attachments/assets/29aec92c-d2d1-4563-a4ab-05aa257fe572)
 ## Search By Query
