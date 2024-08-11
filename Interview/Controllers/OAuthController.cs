@@ -1,6 +1,7 @@
 ﻿using Interview.Entity;
 using Interview.Model;
 using Interview.Service.Token;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -8,6 +9,7 @@ namespace Interview.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class OAuthController : ControllerBase
     {
         private readonly ITokenService _tokenService;

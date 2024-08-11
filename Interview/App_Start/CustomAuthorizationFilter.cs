@@ -15,7 +15,6 @@ namespace Interview.App_Start
     public class CustomAuthorizationFilter : IAuthorizationFilter
     {
         private readonly OAuthConfig _oauthConfig;
-        private  List<string> Roles=new List<string>();
 
         public CustomAuthorizationFilter(IOptions<OAuthConfig> oauthConfig)
         {
@@ -24,8 +23,6 @@ namespace Interview.App_Start
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            Roles.Add("admin");
-            Roles.Add("Developer");
             var token = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
             if (token == null)
@@ -62,16 +59,7 @@ namespace Interview.App_Start
                     context.Result = new ForbidResult();
                 }
 
-                var userRoles = jwtToken.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
-
-                if (Roles.Any(role => userRoles.Contains(role)))
-                {
-                    return; 
-                }
-                else
-                {
-                    context.Result = new ForbidResult();
-                }
+                
 
             }
             catch

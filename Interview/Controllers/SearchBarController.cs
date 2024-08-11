@@ -12,8 +12,7 @@ namespace Interview.Controllers
     /// Handles search-related operations.
     /// </summary>
     [Route("api/[controller]")]
-    //[ServiceFilter(typeof(CustomAuthorizationFilter))]//
-    [TypeFilter(typeof(CustomAuthorizationFilter), Arguments = new object[] { "admin" })]
+    [ServiceFilter(typeof(CustomAuthorizationFilter))]
     [ApiController]
     public class SearchBarController : ControllerBase
     {
@@ -42,6 +41,7 @@ namespace Interview.Controllers
         /// <response code="404">If no results are found.</response>
         /// <response code="500">If an unexpected error occurs.</response>
         [HttpGet]
+        [Authorize(Policy = "admin")]
         public IActionResult SearchBar([FromQuery] string query, [FromQuery] string filter = null, [FromQuery] string sort = null)
         {
             try
@@ -86,6 +86,7 @@ namespace Interview.Controllers
         /// <response code="500">If an unexpected error occurs.</response>
         /// 
         [HttpGet("SearchById")]
+        [Authorize(Policy = "admin")]
         public IActionResult GetSearchById([FromQuery] string id)
         {
             try

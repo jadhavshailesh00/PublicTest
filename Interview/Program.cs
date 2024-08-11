@@ -5,6 +5,7 @@ using Interview.Repository;
 using Interview.Service.Search;
 using Interview.Service.Token;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -69,6 +70,14 @@ builder.Services.Configure<OAuthConfig>(builder.Configuration.GetSection("OAuth"
 //});
 
 builder.Services.AddScoped<CustomAuthorizationFilter>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("admin", policy => policy.Requirements.Add(new AdminRequirement()));
+});
+
+builder.Services.AddSingleton<IAuthorizationHandler, AdminAuthorizationHandler>();
+
 
 builder.Services.AddAuthentication(options =>
 {
