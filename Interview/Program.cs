@@ -74,9 +74,11 @@ builder.Services.AddScoped<CustomAuthorizationFilter>();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("admin", policy => policy.Requirements.Add(new AdminRequirement()));
+    options.AddPolicy("user", policy => policy.Requirements.Add(new AdminRequirement()));
 });
 
 builder.Services.AddSingleton<IAuthorizationHandler, AdminAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, UserAuthorizationHandler>();
 
 
 builder.Services.AddAuthentication(options =>

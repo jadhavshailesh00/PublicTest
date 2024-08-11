@@ -88,7 +88,7 @@ namespace Interview.Controllers
         /// <response code="500">If an unexpected error occurs.</response>
         /// 
         [HttpGet("SearchById")]
-        [Authorize(Policy = "admin")]
+        [Authorize(Policy = "user")]
         public IActionResult GetSearchById([FromQuery] string id)
         {
             try
