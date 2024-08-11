@@ -25,7 +25,6 @@ namespace Interview.Repository
             var result = _data.Where(item => item.ID.Equals(id)).FirstOrDefault();
             if (result == null)
             {
-                // return new SearchResponse { ID = "-1", Category = "Not Found", Date = DateTime.MinValue, Description = "Search item not found", Title = "No Match" };
                 return null;
             }
             else

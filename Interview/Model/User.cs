@@ -1,4 +1,4 @@
-﻿namespace Interview.Entity
+﻿namespace Interview.Model
 {
     /// <summary>
     /// Represents a user in the system.

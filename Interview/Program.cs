@@ -1,12 +1,11 @@
-using Interview.App_Start;
-using Interview.Entity.Token;
+using Interview.App_Start.Filter;
+using Interview.App_Start.Handler;
 using Interview.Model;
 using Interview.Repository;
 using Interview.Service.Search;
 using Interview.Service.Token;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -69,7 +68,7 @@ builder.Services.Configure<OAuthConfig>(builder.Configuration.GetSection("OAuth"
 //    options.Filters.Add<CustomAuthorizationFilter>();
 //});
 
-builder.Services.AddScoped<CustomAuthorizationFilter>();
+builder.Services.AddScoped<AuthorizationFilter>();
 
 builder.Services.AddAuthorization(options =>
 {
@@ -105,7 +104,7 @@ builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 builder.Services.AddControllers(options =>
 {
-    options.Filters.Add<CustomExceptionFilterAttribute>();
+    options.Filters.Add<ExceptionFilter>();
 });
 
 var app = builder.Build();

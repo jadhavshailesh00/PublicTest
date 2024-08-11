@@ -4,16 +4,15 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
-namespace Interview.App_Start
+namespace Interview.App_Start.Filter
 {
-    public class CustomAuthorizationFilter : IAuthorizationFilter
+    public class AuthorizationFilter : IAuthorizationFilter
     {
         private readonly OAuthConfig _oauthConfig;
-        public CustomAuthorizationFilter(IOptions<OAuthConfig> oauthConfig)
+        public AuthorizationFilter(IOptions<OAuthConfig> oauthConfig)
         {
             _oauthConfig = oauthConfig.Value;
         }

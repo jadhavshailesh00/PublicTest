@@ -1,10 +1,8 @@
-﻿using Interview.Entity;
+﻿using Interview.App_Start.Filter;
 using Interview.Entity.Response;
 using Interview.Service.Search;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Interview.App_Start;
 
 namespace Interview.Controllers
 {
@@ -12,7 +10,7 @@ namespace Interview.Controllers
     /// Handles search-related operations.
     /// </summary>
     [Route("api/[controller]")]
-    [ServiceFilter(typeof(CustomAuthorizationFilter))]
+    [ServiceFilter(typeof(AuthorizationFilter))]
     [ApiController]
     public class SearchBarController : ControllerBase
     {

@@ -4,7 +4,6 @@ using Interview.Service.Token;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.Security.Claims;
 
 namespace Interview.API.Controllers
 {
@@ -16,13 +15,20 @@ namespace Interview.API.Controllers
         private readonly ITokenService _tokenService;
         private readonly OAuthConfig _oauthConfig;
 
-
         public OAuthController(ITokenService tokenService, IOptions<OAuthConfig> oauthConfig)
         {
             _tokenService = tokenService;
             _oauthConfig = oauthConfig.Value;
         }
 
+        /// <summary>
+        /// Generates an OAuth 2.0 access token.
+        /// </summary>
+        /// <param name="request">The token request containing client credentials and user details.</param>
+        /// <returns>Returns a bearer access token if the request is valid.</returns>
+        /// <response code="200">Token generated successfully.</response>
+        /// <response code="400">Invalid request parameters.</response>
+        /// <response code="401">Unauthorized request due to invalid client credentials or unsupported grant type.</response>
         [HttpPost("Token")]
         public IActionResult Token(TokenRequest request)
         {
@@ -49,18 +55,22 @@ namespace Interview.API.Controllers
             {
                 return Unauthorized("Invalid client credentials.");
             }
+
             if (!request.Username.Equals("shailesh") || request.Username.Equals("ram"))
             {
                 return BadRequest("Invalid Username.");
             }
+
             if (!request.Password.Equals("password"))
             {
                 return BadRequest("Invalid password.");
             }
+
             if (request.GrantType != "authorization_code" && request.GrantType != "password")
             {
                 return BadRequest("Unsupported grant type.");
             }
+
             var user = new User { UserName = request.Username };
             var token = _tokenService.GenerateToken(user);
             return Ok(new { access_token = token, token_type = "bearer" });

@@ -1,6 +1,4 @@
-﻿using Interview.Entity;
-using Interview.Model;
-using Microsoft.Extensions.Configuration;
+﻿using Interview.Model;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

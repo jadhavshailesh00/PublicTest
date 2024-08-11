@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace Interview.App_Start
+namespace Interview.App_Start.Handler
 {
     public class UserAuthorizationHandler : AuthorizationHandler<UserRequirement>
     {
