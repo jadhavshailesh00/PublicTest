@@ -1,4 +1,5 @@
 using Interview.App_Start;
+using Interview.Entity.Token;
 using Interview.Model;
 using Interview.Repository;
 using Interview.Service.Search;
@@ -62,6 +63,12 @@ builder.Services.AddTransient<ISearchService, SearchService>();
 builder.Services.AddTransient<IRepository, Repository>();
 builder.Services.Configure<OAuthConfig>(builder.Configuration.GetSection("OAuth"));
 
+//builder.Services.AddControllers(options =>
+//{
+//    options.Filters.Add<CustomAuthorizationFilter>();
+//});
+
+builder.Services.AddScoped<CustomAuthorizationFilter>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -103,7 +110,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication();
+//app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

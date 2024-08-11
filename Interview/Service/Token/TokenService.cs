@@ -24,14 +24,22 @@ namespace Interview.Service.Token
             var audience = _oauthConfig.Audience;
             var Scopes = _oauthConfig.Scopes;
             var key = Encoding.ASCII.GetBytes(_oauthConfig.Key);
-            var claims = new[]
+
+            var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Role, "user"),
-                new Claim(ClaimTypes.Email, "Email")
+                new Claim("scope", Scopes),
+                new Claim(ClaimTypes.Email, "Jadhavshailesh00@gmail.com")
             };
+
+            var roles = FatchUserRoles(user);
+
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -46,6 +54,24 @@ namespace Interview.Service.Token
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
+        }
+
+
+        public List<string> FatchUserRoles(User user)
+        {
+            var claims = new List<string>();
+            if (user != null)
+            {
+                if (user.UserName == "shailesh")
+                {
+                    claims.Add("admin");
+                }
+                else if (user.UserName == "ram")
+                {
+                    claims.Add("developer");
+                }
+            }
+            return claims;
         }
     }
 }

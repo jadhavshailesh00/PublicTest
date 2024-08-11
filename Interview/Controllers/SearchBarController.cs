@@ -4,7 +4,7 @@ using Interview.Service.Search;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
+using Interview.App_Start;
 
 namespace Interview.Controllers
 {
@@ -12,7 +12,8 @@ namespace Interview.Controllers
     /// Handles search-related operations.
     /// </summary>
     [Route("api/[controller]")]
-    [Authorize]
+    //[ServiceFilter(typeof(CustomAuthorizationFilter))]//
+    [TypeFilter(typeof(CustomAuthorizationFilter), Arguments = new object[] { "admin" })]
     [ApiController]
     public class SearchBarController : ControllerBase
     {
@@ -83,8 +84,9 @@ namespace Interview.Controllers
         /// <response code="200">Returns the search result.</response>
         /// <response code="404">If no result is found with the provided ID.</response>
         /// <response code="500">If an unexpected error occurs.</response>
-        [HttpGet("{id}")]
-        public IActionResult GetSearchById(string id)
+        /// 
+        [HttpGet("SearchById")]
+        public IActionResult GetSearchById([FromQuery] string id)
         {
             try
             {
