@@ -47,7 +47,7 @@ namespace Interview.Controllers
             try
             {
                 _logger.LogInformation("SearchBar endpoint called with query: {query}, filter: {filter}, sort: {sort}", query, filter, sort);
-                var results = _searchService.SearchData("admin",query, filter, sort);
+                var results = _searchService.SearchData("1",query, filter, sort);
                 if (results == null)
                 {
                     _logger.LogWarning("No results found for query: {query}", query);
@@ -92,7 +92,7 @@ namespace Interview.Controllers
             {
                 _logger.LogInformation("GetSearchById endpoint called with ID: {id}", id);
 
-                var result = _searchService.SearchDataByID("user",id);
+                var result = _searchService.SearchDataByID("1",id);
                 if (result == null)
                 {
                     _logger.LogWarning("No result found with ID: {id}", id);

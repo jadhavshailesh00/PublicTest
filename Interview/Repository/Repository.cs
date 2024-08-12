@@ -2,6 +2,7 @@
 using Interview.Entity.Response;
 using System.Data;
 using System.Data.SqlClient;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Interview.Repository
 {
@@ -64,12 +65,13 @@ namespace Interview.Repository
 
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
+              
                 conn.Open();
-                using (SqlCommand cmd = new SqlCommand("SELECT * FROM ContentItems WHERE ID = @ID Or filter=@filter Or sort=@sort  ORDER BY Date DESC", conn))
+                using (SqlCommand cmd = new SqlCommand("SELECT * FROM ContentItems WHERE Title like '%@query%' Or Description like '%@query%' Or Category like '%@query%'  ORDER BY Date DESC", conn))
                 {
-                    cmd.Parameters.AddWithValue("@ID", query);
-                    cmd.Parameters.AddWithValue("@sort", sort);
-                    cmd.Parameters.AddWithValue("@filter", filter);
+                    cmd.Parameters.AddWithValue("@Title", query);
+                    cmd.Parameters.AddWithValue("@Description", query);
+                    cmd.Parameters.AddWithValue("@Category", query);
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
