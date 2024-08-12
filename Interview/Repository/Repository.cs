@@ -67,11 +67,9 @@ namespace Interview.Repository
             {
               
                 conn.Open();
-                using (SqlCommand cmd = new SqlCommand("SELECT * FROM ContentItems WHERE Title like '%@query%' Or Description like '%@query%' Or Category like '%@query%'  ORDER BY Date DESC", conn))
+                using (SqlCommand cmd = new SqlCommand("SELECT * FROM ContentItems WHERE Title LIKE @query OR Description LIKE @query OR Category LIKE @query ORDER BY Date DESC", conn))
                 {
-                    cmd.Parameters.AddWithValue("@Title", query);
-                    cmd.Parameters.AddWithValue("@Description", query);
-                    cmd.Parameters.AddWithValue("@Category", query);
+                    cmd.Parameters.AddWithValue("@query", "%" + query + "%");
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -79,11 +77,11 @@ namespace Interview.Repository
                         {
                             var _data = new SearchResponse
                             {
-                                ID = reader.GetString(0),
-                                Category = reader.GetString(1),
+                                ID = reader.GetString(reader.GetOrdinal("ID")),
+                                Category = reader.GetString(reader.GetOrdinal("Category")),
                                 Date = reader.GetDateTime(reader.GetOrdinal("Date")),
-                                Description = reader.GetString(3),
-                                Title = reader.GetString(4),
+                                Description = reader.GetString(reader.GetOrdinal("Description")),
+                                Title = reader.GetString(reader.GetOrdinal("Title")),
                             };
                             searchData.Add(_data);
                         }

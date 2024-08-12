@@ -15,7 +15,7 @@ namespace Interview.Repository.Search
         public List<SearchHistory> GetSearchHistoryAsync(string UserID)
         {
             var history = new List<SearchHistory>();
-
+            var SearchList = new List<int>();
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
@@ -23,9 +23,9 @@ namespace Interview.Repository.Search
                 {
                     cmd.Parameters.AddWithValue("@UserId", UserID);
 
-                    using (SqlDataReader reader =  cmd.ExecuteReader())
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        while ( reader.Read())
+                        while (reader.Read())
                         {
                             var searchHistory = new SearchHistory
                             {
@@ -34,14 +34,21 @@ namespace Interview.Repository.Search
                                 Query = reader.GetString(2),
                                 Timestamp = reader.GetDateTime(3)
                             };
-                            searchHistory.SearchResults =  GetSearchResultsAsync(searchHistory.SearchId, conn);
+                            SearchList.Add(searchHistory.SearchId);
                             history.Add(searchHistory);
                         }
                     }
                 }
+                foreach (int searchid in SearchList)
+                {
+                    var searchHistory = history.Find(sh => sh.SearchId.Equals(searchid)); // Find the corresponding SearchHistory object
+                    if (searchHistory != null)
+                    {
+                        searchHistory.SearchResults = GetSearchResultsAsync(searchid, conn); // Call GetSearchResultsAsync to retrieve results
+                    }
+                }
+                return history;
             }
-
-            return history;
         }
 
         private List<SearchResult> GetSearchResultsAsync(int searchId, SqlConnection conn)
@@ -52,7 +59,7 @@ namespace Interview.Repository.Search
             {
                 cmd.Parameters.AddWithValue("@SearchId", searchId);
 
-                using (SqlDataReader reader =  cmd.ExecuteReader())
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
@@ -78,12 +85,12 @@ namespace Interview.Repository.Search
                 conn.Open();
                 using (SqlCommand cmd = new SqlCommand("INSERT INTO SearchHistory (UserId, Query, Timestamp) OUTPUT INSERTED.SearchId VALUES (@UserId, @Query,@Timestamp)", conn))
                 {
-                    string tempquery= "query=" + query + " Filter="+Filter+ " Sort="+ Sort;
+                    string tempquery = "query=" + query + " Filter=" + Filter + " Sort=" + Sort;
                     cmd.Parameters.AddWithValue("@UserId", UserID);
                     cmd.Parameters.AddWithValue("@Query", tempquery);
                     cmd.Parameters.AddWithValue("@Timestamp", DateTime.UtcNow);
 
-                    return (int) cmd.ExecuteScalar();
+                    return (int)cmd.ExecuteScalar();
                 }
             }
         }
@@ -95,7 +102,7 @@ namespace Interview.Repository.Search
                 using (SqlCommand cmd = new SqlCommand("INSERT INTO SearchHistory (UserId, Query, Timestamp) OUTPUT INSERTED.SearchId VALUES (@UserId, @Query, @Timestamp)", conn))
                 {
                     cmd.Parameters.AddWithValue("@UserId", UserID);
-                    cmd.Parameters.AddWithValue("@Query", "query="+ID);
+                    cmd.Parameters.AddWithValue("@Query", "query=" + ID);
                     cmd.Parameters.AddWithValue("@Timestamp", DateTime.UtcNow);
 
                     //var cmd.()
