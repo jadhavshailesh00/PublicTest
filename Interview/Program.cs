@@ -62,12 +62,6 @@ builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<ISearchService, SearchService>();
 builder.Services.AddTransient<IRepository, Repository>();
 builder.Services.Configure<OAuthConfig>(builder.Configuration.GetSection("OAuth"));
-
-//builder.Services.AddControllers(options =>
-//{
-//    options.Filters.Add<CustomAuthorizationFilter>();
-//});
-
 builder.Services.AddScoped<AuthorizationFilter>();
 
 builder.Services.AddAuthorization(options =>

@@ -47,8 +47,7 @@ namespace Interview.Controllers
             try
             {
                 _logger.LogInformation("SearchBar endpoint called with query: {query}, filter: {filter}, sort: {sort}", query, filter, sort);
-
-                var results = _searchService.SearchData(query, filter, sort);
+                var results = _searchService.SearchData("admin",query, filter, sort);
                 if (results == null)
                 {
                     _logger.LogWarning("No results found for query: {query}", query);
@@ -93,7 +92,7 @@ namespace Interview.Controllers
             {
                 _logger.LogInformation("GetSearchById endpoint called with ID: {id}", id);
 
-                var result = _searchService.SearchDataByID(id);
+                var result = _searchService.SearchDataByID("user",id);
                 if (result == null)
                 {
                     _logger.LogWarning("No result found with ID: {id}", id);
@@ -119,6 +118,16 @@ namespace Interview.Controllers
                     ErrorId = Guid.NewGuid().ToString()
                 });
             }
+        }
+
+
+
+        [HttpGet("GetSearchHistory")]
+        [Authorize(Policy = "admin")]
+        public IActionResult GetSearchHistory(string userId)
+        {
+            var history = _searchService.GetSearchHistoryAsync(userId);
+            return Ok(history);
         }
     }
 }
