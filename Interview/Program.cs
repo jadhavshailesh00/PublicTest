@@ -58,6 +58,14 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddScoped<ISearchService>(provider =>
+{
+    var repository = provider.GetRequiredService<IRepository>();
+    return new SearchService(repository, connectionString);
+});
+
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<ISearchService, SearchService>();
 builder.Services.AddTransient<IRepository, Repository>();
