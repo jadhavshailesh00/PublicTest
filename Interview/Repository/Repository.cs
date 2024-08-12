@@ -1,5 +1,6 @@
 ﻿using Interview.Entity.History;
 using Interview.Entity.Response;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace Interview.Repository
@@ -28,19 +29,18 @@ namespace Interview.Repository
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        if (reader != null)
-                        {
-
-                            var _data = new SearchResponse
+                            while (reader.Read())
                             {
-                                ID = reader.GetString(0),
-                                Category = reader.GetString(1),
-                                Title = reader.GetString(2),
-                                Description = reader.GetString(3),
-                                Date = reader.GetDateTime(4),
-                            };
-                            result = _data;
-                        }
+                                var _data = new SearchResponse
+                                {
+                                    ID = reader.GetString(0),
+                                    Category = reader.GetString(1),
+                                    Date= reader.GetDateTime(reader.GetOrdinal("Date")),
+                                    Description = reader.GetString(3),
+                                    Title = reader.GetString(4),
+                                };
+                                result = _data;
+                            }
                     }
 
                 }
@@ -79,9 +79,9 @@ namespace Interview.Repository
                             {
                                 ID = reader.GetString(0),
                                 Category = reader.GetString(1),
-                                Title = reader.GetString(2),
+                                Date = reader.GetDateTime(reader.GetOrdinal("Date")),
                                 Description = reader.GetString(3),
-                                Date = reader.GetDateTime(4)
+                                Title = reader.GetString(4),
                             };
                             searchData.Add(_data);
                         }

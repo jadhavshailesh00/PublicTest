@@ -52,3 +52,9 @@ VALUES
   ('8', 'Fashion', '2024-01-08', 'New Fashion', 'Title Fashion'),
   ('9', 'Books', '2024-11-08', 'New Books', 'Title Books'),
   ('10', 'Music', '2024-12-08', 'New album', 'Title album');
+
+  Select * from ContentItems
+
+  SELECT * FROM ContentItems WHERE ID = 9
+
+SELECT * FROM ContentItems WHERE ID = 9 ORDER BY Date DESC
