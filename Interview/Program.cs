@@ -62,13 +62,14 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 
 builder.Services.AddScoped<ISearchService>(provider =>
 {
-    var repository = provider.GetRequiredService<IRepository>();
-    return new SearchService(repository, connectionString);
+ //   var repository = provider.GetRequiredService<IRepository>();
+    return new SearchService(connectionString);
 });
 
+
 builder.Services.AddTransient<ITokenService, TokenService>();
-builder.Services.AddTransient<ISearchService, SearchService>();
-builder.Services.AddTransient<IRepository, Repository>();
+//builder.Services.AddTransient<ISearchService, SearchService>();
+
 builder.Services.Configure<OAuthConfig>(builder.Configuration.GetSection("OAuth"));
 builder.Services.AddScoped<AuthorizationFilter>();
 

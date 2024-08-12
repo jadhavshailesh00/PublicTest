@@ -11,9 +11,9 @@ namespace Interview.Service.Search
         private readonly IRepository _searchResultRepository;
         private ISearchHistoryRepository _SearchHistoryRepository;
 
-        public SearchService(IRepository repository, string connectionString)
+        public SearchService(string connectionString)
         {
-            _searchResultRepository = repository;
+            _searchResultRepository = new Interview.Repository.Repository(connectionString);
             _SearchHistoryRepository = new SearchHistoryRepository(connectionString);
         }
 

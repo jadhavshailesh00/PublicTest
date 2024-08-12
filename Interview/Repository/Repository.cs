@@ -1,28 +1,52 @@
-﻿using Interview.Entity.Response;
+﻿using Interview.Entity.History;
+using Interview.Entity.Response;
+using System.Data.SqlClient;
 
 namespace Interview.Repository
 {
     public class Repository : IRepository
     {
         private readonly List<SearchResponse> _data = new List<SearchResponse>();
+        private readonly string _connectionString;
 
-        public Repository()
+        public Repository(string connectionString)
         {
-            _data.Add(new SearchResponse { ID = "1", Category = "Technology", Date = new DateTime(2024, 8, 8), Description = "New Technology", Title = "Title Technology" });
-            _data.Add(new SearchResponse { ID = "2", Category = "Entertainment", Date = new DateTime(2024, 7, 8), Description = "New Entertainment", Title = "Title Entertainment" });
-            _data.Add(new SearchResponse { ID = "3", Category = "Sports", Date = new DateTime(2024, 6, 8), Description = "New Sports", Title = "Title Sports" });
-            _data.Add(new SearchResponse { ID = "4", Category = "Health", Date = new DateTime(2024, 5, 8), Description = "New Health", Title = "Title Health" });
-            _data.Add(new SearchResponse { ID = "5", Category = "Business", Date = new DateTime(2024, 4, 8), Description = "New Business", Title = "Title Business" });
-            _data.Add(new SearchResponse { ID = "6", Category = "Travel", Date = new DateTime(2024, 3, 8), Description = "New Travel", Title = "Title Travel" });
-            _data.Add(new SearchResponse { ID = "7", Category = "Food", Date = new DateTime(2024, 2, 8), Description = "New Food", Title = "Title Food" });
-            _data.Add(new SearchResponse { ID = "8", Category = "Fashion", Date = new DateTime(2024, 1, 8), Description = "New Fashion", Title = "Title Fashion" });
-            _data.Add(new SearchResponse { ID = "9", Category = "Books", Date = new DateTime(2024, 11, 8), Description = "New Books", Title = "Title Books" });
-            _data.Add(new SearchResponse { ID = "10", Category = "Music", Date = new DateTime(2024, 12, 8), Description = "New album", Title = "Title album" });
+            _connectionString = connectionString;
         }
 
-        public SearchResponse SearchDataByID(string id)
+        public SearchResponse SearchDataByID(string ID)
         {
-            var result = _data.Where(item => item.ID.Equals(id)).FirstOrDefault();
+
+            var result = new SearchResponse();
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("SELECT * FROM ContentItems WHERE ID = @ID ORDER BY Date DESC", conn))
+                {
+                    cmd.Parameters.AddWithValue("@ID", ID);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader != null)
+                        {
+
+                            var _data = new SearchResponse
+                            {
+                                ID = reader.GetString(0),
+                                Category = reader.GetString(1),
+                                Title = reader.GetString(2),
+                                Description = reader.GetString(3),
+                                Date = reader.GetDateTime(4),
+                            };
+                            result = _data;
+                        }
+                    }
+
+                }
+
+            }
+
             if (result == null)
             {
                 return null;
@@ -35,8 +59,37 @@ namespace Interview.Repository
 
         public List<SearchResponse> SearchData(string query, string filter, string sort)
         {
-            var searchData = _data.Where(item =>
-                           item.Title.Contains(query) || item.Description.Contains(query) || item.Category.Contains(query));
+
+            var searchData = new List<SearchResponse>();
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("SELECT * FROM ContentItems WHERE ID = @ID Or filter=@filter Or sort=@sort  ORDER BY Date DESC", conn))
+                {
+                    cmd.Parameters.AddWithValue("@ID", query);
+                    cmd.Parameters.AddWithValue("@sort", sort);
+                    cmd.Parameters.AddWithValue("@filter", filter);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var _data = new SearchResponse
+                            {
+                                ID = reader.GetString(0),
+                                Category = reader.GetString(1),
+                                Title = reader.GetString(2),
+                                Description = reader.GetString(3),
+                                Date = reader.GetDateTime(4)
+                            };
+                            searchData.Add(_data);
+                        }
+                    }
+                }
+            }
+            //var searchData = _data.Where(item =>
+            //               item.Title.Contains(query) || item.Description.Contains(query) || item.Category.Contains(query));
             if (searchData.Count() == 0)
             {
                 return null;
