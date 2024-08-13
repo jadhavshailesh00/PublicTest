@@ -31,9 +31,7 @@ namespace Interview.Service.Search
             resultData = ApplyFilter(resultData, filter);
             resultData = ApplySort(resultData, sort);
 
-
             int data = ExecuteSaveSearchData(UserID, query, filter, sort);
-            //return searchId;
             return resultData;
         }
 

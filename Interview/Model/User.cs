@@ -1,4 +1,6 @@
-﻿namespace Interview.Model
+﻿using System.Data;
+
+namespace Interview.Model
 {
     /// <summary>
     /// Represents a user in the system.
@@ -18,6 +20,23 @@
         /// <summary>
         /// Gets or sets the Roles.
         /// </summary>
-        public List<string> Roles { get; set; }
+        public string Role { get; set; }
+
+        /// <summary>
+        /// Gets or sets the UserId.
+        /// </summary>
+        public int UserId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Email.
+        /// </summary>
+        public string Email { get; set; }
+
+        /// <summary>
+        /// Gets or sets the UserCreated.
+        /// </summary>
+        public DateTime UserCreated { get; set; }
+
+        
     }
 }

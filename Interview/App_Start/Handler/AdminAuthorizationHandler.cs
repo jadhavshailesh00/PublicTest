@@ -6,7 +6,7 @@ namespace Interview.App_Start.Handler
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, AdminRequirement requirement)
         {
-            if (context.User.IsInRole("admin"))
+            if (context.User.IsInRole("Admin"))
             {
                 context.Succeed(requirement);
             }

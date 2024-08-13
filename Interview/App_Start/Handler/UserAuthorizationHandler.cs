@@ -2,11 +2,11 @@
 
 namespace Interview.App_Start.Handler
 {
-    public class UserAuthorizationHandler : AuthorizationHandler<UserRequirement>
+    public class UserAuthorizationHandler : AuthorizationHandler<DeveloperRequirement>
     {
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, UserRequirement requirement)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, DeveloperRequirement requirement)
         {
-            if (context.User.IsInRole("user"))
+            if (context.User.IsInRole("Developer"))
             {
                 context.Succeed(requirement);
             }
@@ -15,7 +15,7 @@ namespace Interview.App_Start.Handler
         }
     }
 
-    public class UserRequirement : IAuthorizationRequirement
+    public class DeveloperRequirement : IAuthorizationRequirement
     {
     }
 }

@@ -41,7 +41,7 @@ namespace Interview.Controllers
         /// <response code="403">HTTP 403 Forbidden client error.</response>
         /// <response code="500">If an unexpected error occurs.</response>
         [HttpGet]
-        [Authorize(Policy = "admin")]
+        [Authorize(Policy = "Developer")]
         public IActionResult SearchBar([FromQuery] string query, [FromQuery] string filter = null, [FromQuery] string sort = null)
         {
             try
@@ -85,7 +85,7 @@ namespace Interview.Controllers
         /// <response code="500">If an unexpected error occurs.</response>
         /// 
         [HttpGet("SearchById")]
-        [Authorize(Policy = "user")]
+        [Authorize(Policy = "Developer")]
         public IActionResult GetSearchById([FromQuery] string id)
         {
             try
@@ -123,7 +123,7 @@ namespace Interview.Controllers
 
 
         [HttpGet("GetSearchHistory")]
-        [Authorize(Policy = "admin")]
+        [Authorize(Policy = "Admin")]
         public IActionResult GetSearchHistory(string userId)
         {
             var history = _searchService.GetSearchHistoryAsync(userId);

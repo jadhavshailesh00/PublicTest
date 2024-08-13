@@ -55,16 +55,7 @@ namespace Interview.API.Controllers
             {
                 return Unauthorized("Invalid client credentials.");
             }
-
-            if (!request.Username.Equals("shailesh") || request.Username.Equals("ram"))
-            {
-                return BadRequest("Invalid Username.");
-            }
-
-            if (!request.Password.Equals("password"))
-            {
-                return BadRequest("Invalid password.");
-            }
+          
 
             if (request.GrantType != "authorization_code" && request.GrantType != "password")
             {
@@ -72,7 +63,7 @@ namespace Interview.API.Controllers
             }
 
             var user = new User { UserName = request.Username };
-            var token = _tokenService.GenerateToken(user);
+            var token = _tokenService.GenerateToken(user, request);
             return Ok(new { access_token = token, token_type = "bearer" });
         }
     }

@@ -2,10 +2,13 @@ using Interview.App_Start.Filter;
 using Interview.App_Start.Handler;
 using Interview.Model;
 using Interview.Repository;
+using Interview.Repository.Token;
 using Interview.Service.Search;
 using Interview.Service.Token;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -62,21 +65,28 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 
 builder.Services.AddScoped<ISearchService>(provider =>
 {
- //   var repository = provider.GetRequiredService<IRepository>();
     return new SearchService(connectionString);
 });
 
+builder.Services.Configure<OAuthConfig>(builder.Configuration.GetSection("OAuth"));
 
+
+
+
+builder.Services.AddTransient<ITokenRepository>(provider => new TokenRepository(connectionString));
 builder.Services.AddTransient<ITokenService, TokenService>();
+
+
+//builder.Services.AddTransient<ITokenService, TokenService>();
 //builder.Services.AddTransient<ISearchService, SearchService>();
 
-builder.Services.Configure<OAuthConfig>(builder.Configuration.GetSection("OAuth"));
+
 builder.Services.AddScoped<AuthorizationFilter>();
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("admin", policy => policy.Requirements.Add(new AdminRequirement()));
-    options.AddPolicy("user", policy => policy.Requirements.Add(new AdminRequirement()));
+    options.AddPolicy("Admin", policy => policy.Requirements.Add(new AdminRequirement()));
+    options.AddPolicy("Developer", policy => policy.Requirements.Add(new DeveloperRequirement()));
 });
 
 builder.Services.AddSingleton<IAuthorizationHandler, AdminAuthorizationHandler>();
