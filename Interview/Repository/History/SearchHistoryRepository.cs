@@ -1,4 +1,6 @@
 ﻿using Interview.Entity.History;
+using Interview.Entity.Response;
+using Interview.Model;
 using System.Data.SqlClient;
 
 namespace Interview.Repository.Search
@@ -107,6 +109,55 @@ namespace Interview.Repository.Search
 
                     //var cmd.()
                     return (int)cmd.ExecuteScalar();
+                }
+            }
+        }
+
+
+        public int SaveSearchHistroy(string UserID,SearchResponse results)
+        {
+            var searchdata = GetLatestSearchHistory();
+            string ResultData = "Title=" + results.Title + "    Category=" + results.Category + "   Description=" + results.Description;
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("INSERT INTO SearchResults (UserId, SearchId,ResultData, ResultRank, RetrievedAt) VALUES (@UserId, @SearchId, @ResultData,@ResultRank, @RetrievedAt)", conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", Convert.ToInt32(UserID));
+                    cmd.Parameters.AddWithValue("@SearchId", searchdata.SearchId);
+                    cmd.Parameters.AddWithValue("@ResultData", ResultData);
+                    cmd.Parameters.AddWithValue("@ResultRank", 1);
+                    cmd.Parameters.AddWithValue("@RetrievedAt", System.DateTime.Now);
+                    return cmd.ExecuteNonQuery();
+                }
+            }
+            return 0;
+        }
+
+        private SearchHistory GetLatestSearchHistory()
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("SELECT TOP 1 * FROM SearchHistory ORDER BY Timestamp DESC", conn))
+                {
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new SearchHistory
+                            {
+                                SearchId = reader.GetInt32(0),
+                                UserId = reader.GetInt32(1),
+                                Query = reader.GetString(2),
+                                Timestamp = reader.GetDateTime(3)
+                            };
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
                 }
             }
         }

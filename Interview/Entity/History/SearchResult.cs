@@ -1,5 +1,7 @@
-﻿namespace Interview.Entity.History
-{
+﻿using Interview.Entity.Response;
+
+namespace Interview.Entity.History
+{ 
     public class SearchResult
     {
         public int ResultId { get; set; }

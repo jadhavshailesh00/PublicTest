@@ -11,16 +11,18 @@ namespace Interview.Service.Search
         private readonly IRepository _searchResultRepository;
         private ISearchHistoryRepository _SearchHistoryRepository;
 
-        public SearchService(string connectionString)
+        public SearchService(IRepository searchResultRepository, ISearchHistoryRepository searchHistoryRepository)
         {
-            _searchResultRepository = new Interview.Repository.Repository(connectionString);
-            _SearchHistoryRepository = new SearchHistoryRepository(connectionString);
+            _searchResultRepository = searchResultRepository;
+            _SearchHistoryRepository = searchHistoryRepository;
         }
+
 
         public SearchResponse SearchDataByID(string UserID,string query)
         {
             var data=_searchResultRepository.SearchDataByID(query);
             int searchId = ExecuteSaveSearchDataByID(UserID, query);
+             ExecuteSaveSearchHistroy(UserID, data);
             return data;
         }
 
@@ -57,8 +59,6 @@ namespace Interview.Service.Search
             };
         }
 
-
-
         private int ExecuteSaveSearchData(string UserID, string query, string Filter, string Sort)
         {
             int searchId = _SearchHistoryRepository.SaveSearchData(UserID, query, Filter, Sort);
@@ -68,6 +68,12 @@ namespace Interview.Service.Search
         private int ExecuteSaveSearchDataByID(string UserID, string query)
         {
             int searchId = _SearchHistoryRepository.SaveSearchDataByID(UserID, query);
+            return searchId;
+        }
+
+        private int ExecuteSaveSearchHistroy(string UserID, SearchResponse result)
+        {
+            int searchId = _SearchHistoryRepository.SaveSearchHistroy(UserID,result);
             return searchId;
         }
 

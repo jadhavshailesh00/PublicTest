@@ -2,6 +2,7 @@ using Interview.App_Start.Filter;
 using Interview.App_Start.Handler;
 using Interview.Model;
 using Interview.Repository;
+using Interview.Repository.Search;
 using Interview.Repository.Token;
 using Interview.Service.Search;
 using Interview.Service.Token;
@@ -62,24 +63,16 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-builder.Services.AddScoped<ISearchService>(provider =>
-{
-    return new SearchService(connectionString);
-});
-
 builder.Services.Configure<OAuthConfig>(builder.Configuration.GetSection("OAuth"));
 
 
-
-
+builder.Services.AddTransient<IRepository>(provider => new Repository(connectionString));
+builder.Services.AddTransient<ISearchHistoryRepository>(provider => new SearchHistoryRepository(connectionString));
 builder.Services.AddTransient<ITokenRepository>(provider => new TokenRepository(connectionString));
+
+
 builder.Services.AddTransient<ITokenService, TokenService>();
-
-
-//builder.Services.AddTransient<ITokenService, TokenService>();
-//builder.Services.AddTransient<ISearchService, SearchService>();
-
+builder.Services.AddTransient<ISearchService, SearchService>();
 
 builder.Services.AddScoped<AuthorizationFilter>();
 
