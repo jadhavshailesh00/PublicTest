@@ -4,9 +4,9 @@
     {
         public int ResultId { get; set; }
         public int SearchId { get; set; }
+        public int UserId { get; set; }
         public string ResultData { get; set; }
         public int ResultRank { get; set; }
         public DateTime RetrievedAt { get; set; }
-        public SearchHistory SearchHistory { get; set; }
     }
 }

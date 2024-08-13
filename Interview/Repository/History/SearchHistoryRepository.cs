@@ -67,10 +67,11 @@ namespace Interview.Repository.Search
                         results.Add(new SearchResult
                         {
                             ResultId = reader.GetInt32(0),
-                            SearchId = reader.GetInt32(1),
-                            ResultData = reader.GetString(2),
-                            ResultRank = reader.GetInt32(3),
-                            RetrievedAt = reader.GetDateTime(4)
+                            UserId = reader.GetInt32(1),
+                            SearchId = reader.GetInt32(2),
+                            ResultData = reader.GetString(3),
+                            ResultRank = reader.GetInt32(4),
+                            RetrievedAt = reader.GetDateTime(5)
                         });
                     }
                 }
@@ -150,6 +151,7 @@ namespace Interview.Repository.Search
                                 UserId = reader.GetInt32(1),
                                 Query = reader.GetString(2),
                                 Timestamp = reader.GetDateTime(3)
+
                             };
                         }
                         else
