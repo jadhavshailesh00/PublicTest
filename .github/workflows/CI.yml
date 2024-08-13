@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
@@ -42,7 +42,7 @@ jobs:
 
 
       - name: Display Report
-        run: cat ./coveragereport/SummaryGithub.md >> $env:GITHUB_STEP_SUMMARY
+        run: cat ./coveragereport/SummaryGithub.md >> $env:GITHUB_STEP_SUMMARY 
         
 
       - name: Upload Code Coverage Report
