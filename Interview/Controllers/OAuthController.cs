@@ -55,7 +55,7 @@ namespace Interview.API.Controllers
             {
                 return Unauthorized("Invalid client credentials.");
             }
-          
+
 
             if (request.GrantType != "authorization_code" && request.GrantType != "password")
             {

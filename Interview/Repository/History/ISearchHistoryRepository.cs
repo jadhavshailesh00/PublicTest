@@ -1,6 +1,5 @@
 ﻿using Interview.Entity.History;
 using Interview.Entity.Response;
-using System.Data.SqlClient;
 
 namespace Interview.Repository.Search
 {

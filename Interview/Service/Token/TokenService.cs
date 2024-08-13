@@ -1,6 +1,5 @@
 ﻿using Interview.Entity;
 using Interview.Model;
-using Interview.Repository.Search;
 using Interview.Repository.Token;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -30,7 +29,7 @@ namespace Interview.Service.Token
                 return string.Empty;
             }
 
-            if (CurrentUser.UserName != request.Username ||  request.Password!=CurrentUser.Password)
+            if (CurrentUser.UserName != request.Username || request.Password != CurrentUser.Password)
             {
                 return string.Empty;
             }

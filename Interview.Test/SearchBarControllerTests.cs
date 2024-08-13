@@ -1,19 +1,23 @@
 using Interview.Controllers;
-using Interview.Entity.History;
 using Interview.Entity.Response;
+using Interview.Repository;
+using Interview.Repository.Search;
 using Interview.Service.Search;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System.Web.Http.Results;
 
 namespace Interview.Test
 {
     [TestFixture]
     public class SearchBarControllerTests
     {
+        private Mock<IRepository> _mockRepository;
+        private Mock<ISearchHistoryRepository> _mockSearchHistoryRepository;
         private Mock<ISearchService> _mockSearchService;
         private Mock<ILogger<SearchBarController>> _mockLogger;
         private SearchBarController _controller;
+        private SearchService _SearchService;
+
 
         [SetUp]
         public void SetUp()
@@ -21,6 +25,12 @@ namespace Interview.Test
             _mockSearchService = new Mock<ISearchService>();
             _mockLogger = new Mock<ILogger<SearchBarController>>();
             _controller = new SearchBarController(_mockSearchService.Object, _mockLogger.Object);
+
+            _mockRepository = new Mock<IRepository>();
+            _mockSearchHistoryRepository = new Mock<ISearchHistoryRepository>();
+
+            _SearchService = new SearchService(_mockRepository.Object, _mockSearchHistoryRepository.Object);
+
         }
 
         [Test]
@@ -53,7 +63,38 @@ namespace Interview.Test
 
         }
 
-       
+        [Test]
+        public void SearchBar_SearchDataByID_WhenNoResultsFound()
+        {
+            var expectedResult = new SearchResponse();
+            expectedResult.ID = "1";
+            expectedResult.Title = "Title";
+            expectedResult.Date = System.DateTime.Now;
+            expectedResult.Category = "Category";
+            expectedResult.Description = "Description";
+
+            var result = _SearchService.SearchDataByID(" ", " ");
+            Assert.AreNotEqual(result, expectedResult);
+
+        }
+
+        [Test]
+        public void SearchBar_SearchData_WhenNoResultsFound()
+        {
+            var data = new List<SearchResponse>();
+            var expectedResult = new SearchResponse();
+            expectedResult.ID = "1";
+            expectedResult.Title = "Title";
+            expectedResult.Date = System.DateTime.Now;
+            expectedResult.Category = "Category";
+            expectedResult.Description = "Description";
+            data.Add(expectedResult);
+            var result = _SearchService.SearchData(" ", " ", " ", " ");
+            Assert.AreNotEqual(result, data);
+
+        }
+
+
     }
 
 }

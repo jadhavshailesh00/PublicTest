@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 
 namespace Interview.Repository.Token
 {
-    public class TokenRepository :ITokenRepository
+    public class TokenRepository : ITokenRepository
     {
         private readonly string _connectionString;
 

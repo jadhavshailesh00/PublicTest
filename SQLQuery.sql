@@ -7,6 +7,7 @@ CREATE TABLE users (
 );
 
 
+
 CREATE TABLE SearchHistory (
     SearchId INT PRIMARY KEY IDENTITY(1,1),
     UserId INT FOREIGN KEY REFERENCES Users(UserId),
@@ -31,7 +32,7 @@ INSERT INTO Users (Name, Role, Email, UserCreated)
 VALUES ('Ram', 'Admin', 'Ram00@gmail.com', GETDATE());
 
 Select * from users
-
+Select * from  SearchHistory
 CREATE TABLE ContentItems (
     ID NVARCHAR(10) PRIMARY KEY,
     Category NVARCHAR(50) NOT NULL,
@@ -58,3 +59,29 @@ VALUES
   SELECT * FROM ContentItems WHERE ID = 9
 
 SELECT * FROM ContentItems WHERE ID = 9 ORDER BY Date DESC
+
+
+Select * from  users
+
+alter table users add password NVARCHAR(10)
+update users set password='password'
+
+Select * from  SearchHistory
+Select * from  SearchResults
+
+SELECT * FROM ContentItems WHERE Title like '%in%' or 
+Description like '%in%' or Category like '%in%' ORDER BY Date DESC
+
+INSERT INTO SearchResults (UserId, SearchId, ResultData, ResultRank, RetrievedAt)
+SELECT 
+  NULL AS UserId,  -- Assuming search is not user specific
+  NULL AS SearchId, -- Assuming you want to insert this as a generic search
+  ci.Title | ' - ' | ci.Description || ' - ' | ci.Category AS ResultData,
+  ROW_NUMBER() OVER (ORDER BY ci.Date DESC) AS ResultRank,
+  GETDATE() AS RetrievedAt
+FROM ContentItems ci
+WHERE ci.Title LIKE '%in%' OR ci.Description LIKE '%in%' OR ci.Category LIKE '%in%'
+ORDER BY ci.Date DESC;
+
+INSERT INTO SearchResults (UserId, SearchId,ResultData, ResultRank, RetrievedAt)" +
+                    " VALUES (1, 1, ,'ResultData',@ResultRank, @RetrievedAt)

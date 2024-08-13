@@ -1,6 +1,5 @@
 ﻿using Interview.Entity.History;
 using Interview.Entity.Response;
-using Interview.Model;
 using System.Data.SqlClient;
 
 namespace Interview.Repository.Search
@@ -114,7 +113,7 @@ namespace Interview.Repository.Search
         }
 
 
-        public int SaveSearchHistroy(string UserID,SearchResponse results)
+        public int SaveSearchHistroy(string UserID, SearchResponse results)
         {
             var searchdata = GetLatestSearchHistory();
             string ResultData = "Title=" + results.Title + "    Category=" + results.Category + "   Description=" + results.Description;

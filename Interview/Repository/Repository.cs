@@ -1,8 +1,5 @@
-﻿using Interview.Entity.History;
-using Interview.Entity.Response;
-using System.Data;
+﻿using Interview.Entity.Response;
 using System.Data.SqlClient;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Interview.Repository
 {
@@ -30,18 +27,18 @@ namespace Interview.Repository
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                            while (reader.Read())
+                        while (reader.Read())
+                        {
+                            var _data = new SearchResponse
                             {
-                                var _data = new SearchResponse
-                                {
-                                    ID = reader.GetString(0),
-                                    Category = reader.GetString(1),
-                                    Date= reader.GetDateTime(reader.GetOrdinal("Date")),
-                                    Description = reader.GetString(3),
-                                    Title = reader.GetString(4),
-                                };
-                                result = _data;
-                            }
+                                ID = reader.GetString(0),
+                                Category = reader.GetString(1),
+                                Date = reader.GetDateTime(reader.GetOrdinal("Date")),
+                                Description = reader.GetString(3),
+                                Title = reader.GetString(4),
+                            };
+                            result = _data;
+                        }
                     }
 
                 }
@@ -65,7 +62,7 @@ namespace Interview.Repository
 
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-              
+
                 conn.Open();
                 using (SqlCommand cmd = new SqlCommand("SELECT * FROM ContentItems WHERE Title LIKE @query OR Description LIKE @query OR Category LIKE @query ORDER BY Date DESC", conn))
                 {

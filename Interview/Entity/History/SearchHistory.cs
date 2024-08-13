@@ -1,6 +1,4 @@
-﻿using Microsoft.OpenApi.Services;
-
-namespace Interview.Entity.History
+﻿namespace Interview.Entity.History
 {
     public class SearchHistory
     {

@@ -1,6 +1,5 @@
 ﻿using Interview.Entity.History;
 using Interview.Entity.Response;
-using Interview.Model;
 using Interview.Repository;
 using Interview.Repository.Search;
 
@@ -18,25 +17,28 @@ namespace Interview.Service.Search
         }
 
 
-        public SearchResponse SearchDataByID(string UserID,string query)
+        public SearchResponse SearchDataByID(string UserID, string query)
         {
-            var data=_searchResultRepository.SearchDataByID(query);
-             ExecuteSaveSearchDataByID(UserID, query);
-             ExecuteSaveSearchHistroy(UserID, data);
+            var data = _searchResultRepository.SearchDataByID(query);
+            ExecuteSaveSearchDataByID(UserID, query);
+            ExecuteSaveSearchHistroy(UserID, data);
             return data;
         }
 
-        public List<SearchResponse> SearchData(string UserID,string query, string filter, string sort)
+        public List<SearchResponse> SearchData(string UserID, string query, string filter, string sort)
         {
             var resultData = _searchResultRepository.SearchData(query, filter, sort);
-
-            resultData = ApplyFilter(resultData, filter);
-            resultData = ApplySort(resultData, sort);
-
-            int data = ExecuteSaveSearchData(UserID, query, filter, sort);
-            foreach (var currentData in resultData)
+            if (resultData != null)
             {
-                ExecuteSaveSearchHistroy(UserID, currentData);
+
+                resultData = ApplyFilter(resultData, filter);
+                resultData = ApplySort(resultData, sort);
+
+                int data = ExecuteSaveSearchData(UserID, query, filter, sort);
+                foreach (var currentData in resultData)
+                {
+                    ExecuteSaveSearchHistroy(UserID, currentData);
+                }
             }
             return resultData;
         }
@@ -77,7 +79,7 @@ namespace Interview.Service.Search
 
         private int ExecuteSaveSearchHistroy(string UserID, SearchResponse result)
         {
-            int searchId = _SearchHistoryRepository.SaveSearchHistroy(UserID,result);
+            int searchId = _SearchHistoryRepository.SaveSearchHistroy(UserID, result);
             return searchId;
         }
 

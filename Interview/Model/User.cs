@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace Interview.Model
+﻿namespace Interview.Model
 {
     /// <summary>
     /// Represents a user in the system.
@@ -37,6 +35,6 @@ namespace Interview.Model
         /// </summary>
         public DateTime UserCreated { get; set; }
 
-        
+
     }
 }
