@@ -1,0 +1,15 @@
+name: .NET CI 
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  call-workflow-passing-data:
+       uses: jadhavshailesh00/Centralize_Repo/.github/workflows/Centralize_DotNet_CI.yml@main
+       with:
+            SOLUTION_NAME: './Interview/Interview.csproj'
+
+
+
