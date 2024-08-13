@@ -21,7 +21,7 @@ namespace Interview.Service.Search
         public SearchResponse SearchDataByID(string UserID,string query)
         {
             var data=_searchResultRepository.SearchDataByID(query);
-            int searchId = ExecuteSaveSearchDataByID(UserID, query);
+             ExecuteSaveSearchDataByID(UserID, query);
              ExecuteSaveSearchHistroy(UserID, data);
             return data;
         }
@@ -34,6 +34,10 @@ namespace Interview.Service.Search
             resultData = ApplySort(resultData, sort);
 
             int data = ExecuteSaveSearchData(UserID, query, filter, sort);
+            foreach (var currentData in resultData)
+            {
+                ExecuteSaveSearchHistroy(UserID, currentData);
+            }
             return resultData;
         }
 
