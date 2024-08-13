@@ -42,10 +42,10 @@ namespace Interview.Repository.Search
                 }
                 foreach (int searchid in SearchList)
                 {
-                    var searchHistory = history.Find(sh => sh.SearchId.Equals(searchid)); // Find the corresponding SearchHistory object
+                    var searchHistory = history.Find(sh => sh.SearchId.Equals(searchid)); 
                     if (searchHistory != null)
                     {
-                        searchHistory.SearchResults = GetSearchResultsAsync(searchid, conn); // Call GetSearchResultsAsync to retrieve results
+                        searchHistory.SearchResults = GetSearchResultsAsync(searchid, conn); 
                     }
                 }
                 return history;
@@ -106,8 +106,6 @@ namespace Interview.Repository.Search
                     cmd.Parameters.AddWithValue("@UserId", UserID);
                     cmd.Parameters.AddWithValue("@Query", "query=" + ID);
                     cmd.Parameters.AddWithValue("@Timestamp", DateTime.UtcNow);
-
-                    //var cmd.()
                     return (int)cmd.ExecuteScalar();
                 }
             }

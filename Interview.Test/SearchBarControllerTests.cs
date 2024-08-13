@@ -94,7 +94,40 @@ namespace Interview.Test
 
         }
 
+        [Test]
+        public void SearchBar_SearchDataByID_Success()
+        {
+            var expectedResult = new SearchResponse { ID = "1", Title = "Test Result" };
+            _mockRepository.Setup(repo => repo.SearchDataByID(It.IsAny<string>())).Returns(expectedResult);
 
+            var result = _SearchService.SearchDataByID("UserID", "query");
+
+            Assert.AreEqual(expectedResult, result);
+            _mockSearchHistoryRepository.Verify(repo => repo.SaveSearchDataByID(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            _mockSearchHistoryRepository.Verify(repo => repo.SaveSearchHistroy(It.IsAny<string>(), It.IsAny<SearchResponse>()), Times.Once);
+        }
+
+        [Test]
+        public void SearchBar_SearchData_Success()
+        {
+
+            var expectedSearchResults = new List<SearchResponse>
+            {
+                new SearchResponse { ID = "1", Title = "Result 1", Date = new DateTime(2023, 11, 11) },
+                new SearchResponse { ID = "2", Title = "Result 2", Date = new DateTime(2023, 12, 12) },
+                new SearchResponse { ID = "3", Title = "Result 3", Date = new DateTime(2023, 10, 10) }
+            };
+
+            _mockRepository.Setup(repo => repo.SearchData(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(expectedSearchResults);
+
+            var results = _SearchService.SearchData("1", "in", "", "");
+
+            Assert.IsNotNull(results);
+            Assert.AreEqual(3, results.Count);
+            Assert.AreEqual("1", results[0].ID);
+            Assert.AreEqual("2", results[1].ID);
+        }
     }
 
 }

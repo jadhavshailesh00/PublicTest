@@ -14,23 +14,20 @@ namespace Interview.App_Start.Filter
 
         public void OnException(ExceptionContext context)
         {
-            // Log the exception
             _logger.LogError(context.Exception, "An unhandled exception occurred.");
 
-            // Determine the status code based on the type of exception
             int statusCode = context.Exception switch
             {
-                ArgumentNullException => 400,  // Bad Request
-                UnauthorizedAccessException => 401,  // Unauthorized
-                KeyNotFoundException => 404,  // Not Found
-                _ => 500  // Internal Server Error (default)
+                ArgumentNullException => 400,  
+                UnauthorizedAccessException => 401,  
+                KeyNotFoundException => 404,  
+                _ => 500 
             };
 
-            // Set the result with the determined status code
             context.Result = new JsonResult(new
             {
-                Error = context.Exception.Message, // Optionally include exception message
-                ExceptionType = context.Exception.GetType().Name // Optionally include exception type
+                Error = context.Exception.Message, 
+                ExceptionType = context.Exception.GetType().Name 
             })
             {
                 StatusCode = statusCode

@@ -85,8 +85,6 @@ namespace Interview.Repository
                     }
                 }
             }
-            //var searchData = _data.Where(item =>
-            //               item.Title.Contains(query) || item.Description.Contains(query) || item.Category.Contains(query));
             if (searchData.Count() == 0)
             {
                 return null;
