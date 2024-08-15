@@ -69,8 +69,8 @@ update users set password='password'
 Select * from  SearchHistory
 Select * from  SearchResults
 
-SELECT * FROM ContentItems WHERE Title like '%in%' or 
-Description like '%in%' or Category like '%in%' ORDER BY Date DESC
+SELECT * FROM ContentItems WHERE Title like '%b%' or 
+Description like '%b%' or Category like '%b%' ORDER BY Date DESC
 
 INSERT INTO SearchResults (UserId, SearchId, ResultData, ResultRank, RetrievedAt)
 SELECT 

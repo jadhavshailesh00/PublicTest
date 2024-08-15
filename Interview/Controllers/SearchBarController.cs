@@ -48,7 +48,7 @@ namespace Interview.Controllers
             {
                 _logger.LogInformation("SearchBar endpoint called with query: {query}, filter: {filter}, sort: {sort}", query, filter, sort);
                 var results = _searchService.SearchData("1", query, filter, sort);
-                if (results == null)
+                if (results == null || results.Count() == 0 )
                 {
                     _logger.LogWarning("No results found for query: {query}", query);
                     return NotFound(new ErrorResponse
@@ -93,7 +93,7 @@ namespace Interview.Controllers
                 _logger.LogInformation("GetSearchById endpoint called with ID: {id}", id);
 
                 var result = _searchService.SearchDataByID("1", id);
-                if (result == null)
+                if (result == null || result.ID == null )
                 {
                     _logger.LogWarning("No result found with ID: {id}", id);
                     return NotFound(new ErrorResponse
@@ -126,7 +126,22 @@ namespace Interview.Controllers
         [Authorize(Policy = "Admin")]
         public IActionResult GetSearchHistory(string userId)
         {
+            if (!int.TryParse(userId, out int numericUserId))
+            {
+                return BadRequest("Invalid user ID. User ID must be a numeric value.");
+            }
             var history = _searchService.GetSearchHistoryAsync(userId);
+            if (history == null || history.Count() == 0)
+            {
+                _logger.LogWarning("No result found with ID: {id}", userId);
+                return NotFound(new ErrorResponse
+                {
+                    Message = "No result was found with the provided ID.",
+                    ErrorCode = "ID_NOT_FOUND",
+                    Resolution = "Please verify the ID and try again.",
+                    ErrorId = Guid.NewGuid().ToString()
+                });
+            }
             return Ok(history);
         }
     }

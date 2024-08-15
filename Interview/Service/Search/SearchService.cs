@@ -47,7 +47,7 @@ namespace Interview.Service.Search
         {
             if (filter == "recent")
             {
-                return resultData.Where(item => item.Date >= DateTime.UtcNow.AddDays(-30)).ToList();
+                return resultData.Where(item => item.Date >= DateTime.UtcNow.AddDays(-30) && item.Date <= DateTime.UtcNow).ToList();;
             }
             return resultData;
         }

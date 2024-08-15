@@ -64,13 +64,13 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 builder.Services.Configure<OAuthConfig>(builder.Configuration.GetSection("OAuth"));
 
 
-builder.Services.AddTransient<IRepository>(provider => new Repository(connectionString));
-builder.Services.AddTransient<ISearchHistoryRepository>(provider => new SearchHistoryRepository(connectionString));
-builder.Services.AddTransient<ITokenRepository>(provider => new TokenRepository(connectionString));
+builder.Services.AddScoped<IRepository>(provider => new Repository(connectionString));
+builder.Services.AddScoped<ISearchHistoryRepository>(provider => new SearchHistoryRepository(connectionString));
+builder.Services.AddScoped<ITokenRepository>(provider => new TokenRepository(connectionString));
 
 
-builder.Services.AddTransient<ITokenService, TokenService>();
-builder.Services.AddTransient<ISearchService, SearchService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
 
 builder.Services.AddScoped<AuthorizationFilter>();
 
